@@ -16,9 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial project setup and structure
 - Basic README with project information
 - CHANGELOG.md for tracking changes
+- Comprehensive docstrings for all classes and methods
+- Type hints throughout the codebase
+- Constants for better maintainability
+- Error handling for screen clearing and user input
+- Maximum attempts for input validation
+- Configurable border length
 
 ### Changed
-- N/A
+- Improved code organization by moving weapon data to constants
+- Enhanced error handling with try-except blocks
+- Added keyboard interrupt handling
+- Made border length configurable
 
 ### Deprecated
 - N/A

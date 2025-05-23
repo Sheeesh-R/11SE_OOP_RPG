@@ -1,30 +1,16 @@
-<<<<<<< HEAD
 # RPG Lesson: Development Roadmap
 
 This document outlines the development plan for the RPG OOP demonstration project, focusing on a single-file implementation that clearly demonstrates object-oriented programming concepts.
-=======
-# RPG Lesson: Simple File Structure
-
-This document outlines a clean, simple file structure for organizing the RPG game code without using Python packages. This approach keeps the project straightforward while maintaining good code organization.
->>>>>>> e6aac784b800ffb903dea0ebae9f08e14495f1d2
 
 ## Goals
 
-<<<<<<< HEAD
 1. Demonstrate core OOP concepts in a single, easy-to-understand file
 2. Show class relationships (inheritance, composition, association)
 3. Illustrate proper code organization within a single file
 4. Provide clear examples of OOP principles in practice
-=======
-1. Keep the code organized in a simple, flat structure
-2. Maintain clear separation of concerns
-3. Make it easy to understand and modify
-4. Focus on demonstrating OOP concepts
->>>>>>> e6aac784b800ffb903dea0ebae9f08e14495f1d2
 
 ## Implementation Approach
 
-<<<<<<< HEAD
 The project maintains a single Python file (`rpg_oop_concepts.py`) that contains all necessary components, organized into logical sections:
 
 1. **Utility Functions** - Helper functions at the top
@@ -72,55 +58,16 @@ This approach keeps the demonstration focused and easy to follow while still dem
 - Shows a simple class with attributes and minimal methods
 - Demonstrates composition (used by Character class)
 - Illustrates a basic data structure
-=======
-```
-rpg_game/
-├── README.md           # Project documentation
-├── main.py             # Entry point with if __name__ == "__main__"
-├── game.py             # Game class definition
-├── character.py        # Character class
-├── boss.py             # Boss class (inherits from Character)
-├── weapon.py           # Weapon class
-├── game_logger.py      # GameLogger class
-└── console_utils.py    # Console utility functions
-```
-
-## Implementation Steps
-
-### 1. Create File Structure
-
-- Create the files as outlined above
-- No need for `__init__.py` files or package structure
-
-### 2. Extract Utility Functions
-
-- Move `clear_screen()`, `press_enter()`, and `print_border()` to `console_utils.py`
-- Move `GameLogger` class to `game_logger.py`
-
-### 3. Extract Game Entities
-
-- Move `Weapon` class to `weapon.py`
-- Move `Character` class to `character.py`
-  - Add import for `Weapon` and `GameLogger`
-- Move `Boss` class to `boss.py`
-  - Add import for `Character`
-
-### 4. Extract Game Logic
->>>>>>> e6aac784b800ffb903dea0ebae9f08e14495f1d2
 
 ### Character Class
 - Demonstrates encapsulation with private attributes and getters/setters
 - Shows composition by containing a Weapon object
 - Illustrates class methods and instance variables
 
-<<<<<<< HEAD
 ### Boss Class
 - Demonstrates inheritance by extending Character
 - Shows method overriding with `attack()`
 - Illustrates the use of `super()` to call parent class methods
-=======
-### 5. Create Entry Point
->>>>>>> e6aac784b800ffb903dea0ebae9f08e14495f1d2
 
 ### Game Class
 - Manages the main game loop and state

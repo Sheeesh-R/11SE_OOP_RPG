@@ -1,16 +1,13 @@
-<<<<<<< HEAD
 # RPG Lesson: Development Roadmap
 
 This document outlines the development plan for the RPG OOP demonstration project, focusing on a single-file implementation that clearly demonstrates object-oriented programming concepts.
-=======
+
 # RPG Lesson: Simple File Structure
 
 This document outlines a clean, simple file structure for organizing the RPG game code without using Python packages. This approach keeps the project straightforward while maintaining good code organization.
->>>>>>> e6aac784b800ffb903dea0ebae9f08e14495f1d2
 
 ## Goals
 
-<<<<<<< HEAD
 1. Demonstrate core OOP concepts in a single, easy-to-understand file
 2. Show class relationships (inheritance, composition, association)
 3. Illustrate proper code organization within a single file
@@ -20,11 +17,9 @@ This document outlines a clean, simple file structure for organizing the RPG gam
 2. Maintain clear separation of concerns
 3. Make it easy to understand and modify
 4. Focus on demonstrating OOP concepts
->>>>>>> e6aac784b800ffb903dea0ebae9f08e14495f1d2
 
 ## Implementation Approach
 
-<<<<<<< HEAD
 The project maintains a single Python file (`rpg_oop_concepts.py`) that contains all necessary components, organized into logical sections:
 
 1. **Utility Functions** - Helper functions at the top
@@ -113,14 +108,10 @@ rpg_game/
 - Shows composition by containing a Weapon object
 - Illustrates class methods and instance variables
 
-<<<<<<< HEAD
 ### Boss Class
 - Demonstrates inheritance by extending Character
 - Shows method overriding with `attack()`
 - Illustrates the use of `super()` to call parent class methods
-=======
-### 5. Create Entry Point
->>>>>>> e6aac784b800ffb903dea0ebae9f08e14495f1d2
 
 ### Game Class
 - Manages the main game loop and state

@@ -1,175 +1,444 @@
 import os
 import datetime
+from typing import Optional, List, Dict, Any
 
-# Clear the console screen
-def clear_screen():
+# === Utility Functions ===
+# Helper functions for console operations and user interaction
+
+def clear_screen() -> None:
+    """Clear the console screen.
+
+    This function clears the terminal screen using the appropriate
+    command for the operating system (cls for Windows, clear for Unix).
+    """
     os.system('cls' if os.name == 'nt' else 'clear')
 
-# Prompt the user to press Enter to continue
-def press_enter():
+def press_enter() -> None:
+    """Prompt user to press Enter to continue.
+
+    Displays a message and waits for the user to press Enter before
+    continuing program execution.
+    """
     input("\nPress Enter to continue...\n")
 
-# Print a border for visual separation
-def print_border():
+def print_border() -> None:
+    """Print a visual separator.
+
+    Creates a horizontal line of dashes to visually separate sections
+    of output in the console.
+    """
     print("-" * 80)
 
-# GameLogger class to demonstrate association relationship with Game (solid line in UML)
+# === Core Classes ===
+
+# GameLogger class to handle game logging functionality
 class GameLogger:
-    def __init__(self, log_to_console=True):
+    """Class to handle game logging functionality.
+
+    This class provides methods for logging game events, primarily combat
+    actions, with timestamps. It supports both console output and can be
+    extended for other logging mechanisms.
+
+    Attributes:
+        log_to_console (bool): Whether to output logs to the console
+    """
+
+    def __init__(self, log_to_console: bool = True) -> None:
+        """Initialize the GameLogger instance.
+
+        Args:
+            log_to_console (bool): Whether to output logs to the console
+        """
         self.log_to_console = log_to_console
         
-    def log_combat(self, attacker, defender, damage):
-        # Get current time for the log
-        timestamp = datetime.datetime.now().strftime("%H:%M:%S")
-        log_message = f"[{timestamp}] COMBAT LOG: {attacker.name} attacked {defender.name} for {damage} damage"
-        if self.log_to_console:
-            print(log_message)
-        # Future enhancement: could log to file, database, etc.
+    def log_combat(self, attacker: str, defender: str, damage: int) -> None:
+        """Log a combat event with timestamp.
 
-# Define a Weapon class to represent different weapons in the game
+        Args:
+            attacker (str): Name of the attacking character
+            defender (str): Name of the defending character
+            damage (int): Amount of damage dealt
+        """
+        timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+        message = f"[{timestamp}] {attacker} attacked {defender} for {damage} damage"
+        if self.log_to_console:
+            print(message)
+
+# Weapon class to represent different weapons in the game
 class Weapon:
-    def __init__(self, name, damage_bonus):
+    """Class representing weapons in the game.
+
+    Attributes:
+        name (str): Name of the weapon
+        damage_bonus (int): Additional damage bonus provided by the weapon
+    """
+
+    def __init__(self, name: str, damage_bonus: int) -> None:
+        """Initialize a new Weapon instance.
+
+        Args:
+            name (str): Name of the weapon
+            damage_bonus (int): Damage bonus provided by the weapon
+        """
         self.name = name
         self.damage_bonus = damage_bonus
 
-# Define a Character class to represent a game character
+    def __str__(self) -> str:
+        """Return a string representation of the weapon.
+
+        Returns:
+            str: Formatted string showing weapon name and damage bonus
+        """
+        return f"{self.name} (+{self.damage_bonus} damage)"
+
+# Base class for all game characters
 class Character:
-    def __init__(self, name, health, damage, weapon_name=None, weapon_damage=0):
-        self.name = name
-        # The underscore prefix (_) indicates that this attribute is intended to be "private" 
-        # - meaning it should only be accessed through the getter and setter methods.
-        # This is a convention in Python, not a strict rule enforced by the language.
-        self._health = health  # Private attribute (by convention)
-        self.damage = damage
-        # Create the weapon inside the Character constructor (strong composition)
-        self.weapon = Weapon(weapon_name, weapon_damage) if weapon_name else None
+    """Base class for all game characters.
 
-    # Getter for health - provides controlled access to the private attribute
-    def get_health(self):
-        return self._health
+    This class represents a generic game character with attributes and methods
+    for combat and character management. It serves as the base class for more
+    specialized character types like Boss.
+
+    Attributes:
+        name (str): Character's name
+        health (int): Current health points
+        damage (int): Base damage value
+        weapon (Weapon): Character's equipped weapon
+
+    Usage Example:
+    ```python
+    # Create a character with a weapon
+    sword = Weapon("Sword", 5)
+    hero = Character("Hero", 100, 10, sword)
     
-    # Setter for health with validation - ensures health is never negative
-    def set_health(self, new_health):
-        if new_health < 0:
-            self._health = 0
-        else:
-            self._health = new_health
+    # Display character info
+    hero.display()
+    
+    # Attack another character
+    enemy = Character("Goblin", 50, 5)
+    damage = hero.attack(enemy)
+    print(f"Dealt {damage} damage!")
+    ```
+    """
 
-    # Method for the character to attack an enemy
-    def attack(self, enemy, logger=None):
+    def __init__(self, name: str, health: int, damage: int, weapon: Optional[Weapon] = None) -> None:
+        """Initialize a new Character instance.
+
+        Args:
+            name (str): Character's name
+            health (int): Initial health points
+            damage (int): Base damage value
+            weapon (Weapon, optional): Character's weapon
+        """
+        self.name = name
+        self._health = health
+        self.damage = damage
+        self.weapon = weapon
+
+    @property
+    def health(self) -> int:
+        """Get character's current health.
+
+        Returns:
+            int: Current health points
+        """
+        return self._health
+
+    @health.setter
+    def health(self, value: int) -> None:
+        """Set character's health with validation.
+
+        Args:
+            value (int): New health value
+        
+        Notes:
+            Health cannot go below 0
+        """
+        self._health = max(0, value)
+
+    def get_health(self) -> int:
+        """Get character's current health.
+
+        Returns:
+            int: Current health points
+        
+        Notes:
+            This method is provided for compatibility with older code.
+            Prefer using the health property directly.
+        """
+        return self.health
+    
+    def set_health(self, new_health: int) -> None:
+        """Set character's health with validation.
+
+        Args:
+            new_health (int): New health value
+        
+        Notes:
+            This method is provided for compatibility with older code.
+            Prefer using the health property directly.
+        """
+        self.health = new_health
+
+    def attack(self, enemy: 'Character', logger: Optional[GameLogger] = None) -> int:
+        """Attack another character.
+
+        Args:
+            enemy (Character): Target character to attack
+            logger (GameLogger, optional): Logger instance for combat logging
+
+        Returns:
+            int: Total damage dealt
+        
+        Notes:
+            Damage is calculated as:
+            base_damage + (weapon_damage_bonus if weapon exists)
+        """
         total_damage = self.damage + (self.weapon.damage_bonus if self.weapon else 0)
-        # Use getter and setter instead of direct attribute access
-        current_health = enemy.get_health()
-        enemy.set_health(current_health - total_damage)
-        # Use the logger if provided (dependency), otherwise fall back to static method
+        enemy.health -= total_damage
         if logger:
-            logger.log_combat(self, enemy, total_damage)
+            logger.log_combat(self.name, enemy.name, total_damage)
         return total_damage
 
-    # Method to display character information
-    def display(self):
-        weapon_name = self.weapon.name if self.weapon else 'No Weapon'
-        weapon_damage = self.weapon.damage_bonus if self.weapon else 0
-        # Use getter instead of direct attribute access
-        print(f"Name: {self.name}\nHealth: {self.get_health()}\nDamage: {self.damage}\nWeapon: {weapon_name} (+{weapon_damage} Damage)")
+    def display(self) -> None:
+        """Display character information.
 
-# Define a Boss class that inherits from Character, representing a boss enemy
+        Shows character's name, health, damage, and equipped weapon.
+        """
+        weapon = self.weapon or "No Weapon"
+        print(f"\nName: {self.name}")
+        print(f"Health: {self.health}")
+        print(f"Damage: {self.damage}")
+        print(f"Weapon: {weapon.name} (+{weapon.damage_bonus} damage)" if self.weapon else "No Weapon")
+
+    def __str__(self) -> str:
+        """Return a string representation of the character.
+
+        Returns:
+            str: Formatted string showing character's name and health
+        """
+        return f"{self.name} (Health: {self.health})"
+
+    @staticmethod
+    def test_character_behavior() -> None:
+        """Test character behavior and combat mechanics.
+
+        This method tests:
+        - Character creation
+        - Weapon usage
+        - Attack mechanics
+        - Health management
+        - Combat logging
+        """
+        # Create test characters
+        sword = Weapon("Test Sword", 5)
+        hero = Character("Test Hero", 100, 10, sword)
+        enemy = Character("Test Enemy", 50, 5)
+        
+        # Test logger
+        logger = GameLogger()
+        
+        # Test attack
+        damage = hero.attack(enemy, logger)
+        assert damage == 15  # 10 base + 5 weapon bonus
+        assert enemy.health == 35  # 50 - 15 damage
+        
+        # Test health management
+        enemy.health = 20
+        assert enemy.health == 20
+        
+        # Test no weapon case
+        hero.weapon = None
+        damage = hero.attack(enemy, logger)
+        assert damage == 10  # Only base damage
+        
+        print("Character behavior tests passed!")
+
+# Boss class representing powerful enemies that inherit from Character
 class Boss(Character):
-    def __init__(self, name, health, damage):
-        # Pass weapon details to parent constructor instead of creating a Weapon object here
-        super().__init__(name, health, damage, "Boss Weapon", 5)
+    """Class representing boss enemies.
 
-    # Boss's special attack with additional damage
-    def attack(self, enemy, logger=None):
-        additional_damage = 1 # Example of special attack causing additional damage
-        total_damage = super().attack(enemy, logger) # Call Character's attack, then add bonus
-        # Use getter and setter instead of direct attribute access
-        current_health = enemy.get_health()
-        enemy.set_health(current_health - additional_damage) # Apply additional damage
-        print(f"{self.name} uses a special attack! (+{additional_damage} Damage)")
-        # Use the logger if provided for the special attack
+    Boss characters inherit from Character and have special attack abilities.
+    They are designed to be more challenging opponents.
+    """
+
+    def __init__(self, name: str, health: int, damage: int) -> None:
+        """Initialize a new Boss instance.
+
+        Args:
+            name (str): Boss's name
+            health (int): Initial health points
+            damage (int): Base damage value
+        """
+        super().__init__(name, health, damage, Weapon("Boss Weapon", 5))
+
+    def attack(self, enemy: Character, logger: Optional[GameLogger] = None) -> int:
+        """Perform a special attack with additional damage.
+
+        Args:
+            enemy (Character): Target character to attack
+            logger (GameLogger, optional): Logger instance for combat logging
+
+        Returns:
+            int: Total damage dealt (base + special attack)
+        """
+        base_damage = super().attack(enemy, logger)
+        additional_damage = 2
+        enemy.health -= additional_damage
         if logger:
-            logger.log_combat(self, enemy, additional_damage)
-        return total_damage + additional_damage
+            logger.log_combat(self.name, enemy.name, additional_damage)
+        print(f"{self.name} uses a special attack! (+{additional_damage} damage)")
+        return base_damage + additional_damage
+
+    def __str__(self) -> str:
+        """Return a string representation of the boss.
+
+        Returns:
+            str: Formatted string showing boss name and health
+        """
+        return f"Boss: {super().__str__()}"
 
 
-# Define a Game class to manage the game flow
+# === Game Logic ===
+
+# Main game class that manages game flow and state
 class Game:
+    """Main game class that manages game flow and state.
+
+    This class handles the overall game logic, including:
+    - Player character creation
+    - Boss management
+    - Combat system
+    - Game progression
+    - Victory/defeat conditions
+
+    Usage Example:
+    ```python
+    # Create and start a new game
+    game = Game()
+    game.run()  # This will start the game loop
+
+    # Access game state
+    player = game.player  # Get player character
+    bosses = game.bosses  # Get list of bosses
+    logger = game.logger  # Get game logger
+    ```
+    """
+    
     def __init__(self):
-        self.player = None
-        self.bosses = []
-        # Create and manage a GameLogger instance (association)
+        """Initialize game state and dependencies.
+
+        Sets up the initial game state with:
+        - No player character (will be created during setup)
+        - Empty list of bosses (will be populated during setup)
+        - Game logger for combat events
+        """
+        self.player: Optional[Character] = None
+        self.bosses: List[Boss] = []
         self.logger = GameLogger()
 
-    # Show the introductory message and set up the game
-    def show_intro(self):
+    def show_intro(self) -> None:
+        """Display game introduction and set up the game.
+
+        This method:
+        1. Clears the screen
+        2. Shows the game introduction message
+        3. Prompts for player name
+        4. Calls setup_game to create character
+        """
         clear_screen()
         print("Welcome to the RPG Adventure!")
         print("In a world where darkness looms, you are the chosen hero destined to defeat the evil bosses and restore peace.")
         self.setup_game(input("Enter your character's name: ").capitalize())
 
-    # Set up the game by creating the player character and bosses
-    def setup_game(self, name):
-        # Get weapon details instead of a Weapon object
+    def setup_game(self, name: str) -> None:
+        """Create player character and bosses.
+
+        Args:
+            name (str): Player's chosen character name
+
+        This method:
+        1. Prompts player to choose a weapon
+        2. Creates player character with chosen weapon
+        3. Displays character information
+        4. Creates list of boss enemies
+        """
         weapon_name, weapon_damage = self.choose_weapon()
-        self.player = Character(name, 110, 10, weapon_name, weapon_damage)
+        self.player = Character(name, 110, 10, Weapon(weapon_name, weapon_damage))
         self.player.display()
         press_enter()
-        self.bosses = [Boss("Goblin King", 50, 8), Boss("Dark Sorcerer", 60, 9)]
+        self.bosses = [
+            Boss("Goblin King", 50, 8),
+            Boss("Dark Sorcerer", 60, 9)
+        ]
 
-    # Allow the player to choose a weapon
-    def choose_weapon(self):
+    def test_game_state(self) -> None:
+        """Test the game state and character creation.
+
+        This method is used for testing purposes to verify:
+        - Player character creation
+        - Boss creation
+        - Weapon assignment
+        - Initial health values
+        """
+        # Test player creation
+        test_player = Character("Test Hero", 100, 10, Weapon("Test Sword", 5))
+        assert test_player.health == 100
+        assert test_player.damage == 10
+        assert test_player.weapon.name == "Test Sword"
+        
+        # Test boss creation
+        test_boss = Boss("Test Boss", 50, 8)
+        assert test_boss.health == 50
+        assert test_boss.damage == 8
+        assert test_boss.weapon.name == "Boss Weapon"
+
+        print("Game state tests passed!")
+
+    def choose_weapon(self) -> tuple[str, int]:
+        """Let player choose a weapon."""
         weapons = [
             {"name": "Rock", "damage_bonus": 2},
             {"name": "Paper", "damage_bonus": 3},
             {"name": "Scissors", "damage_bonus": 4}
         ]
         options = [weapon["name"] for weapon in weapons]
-        choice_index = self.get_valid_input("\nChoose your weapon (Rock, Paper, Scissors): ", options)
-        weapon_data = weapons[choice_index]
-        # Return weapon name and damage instead of creating a Weapon object
-        return weapon_data["name"], weapon_data["damage_bonus"]
-
-    # Get valid user input for weapon choice
-    def get_valid_input(self, prompt, options):
         while True:
-            user_input = input(prompt).capitalize()
-            if user_input in options:
-                return options.index(user_input)
-            print("Invalid input, please try again.")
+            choice = input("\nChoose your weapon (Rock, Paper, Scissors): ").capitalize()
+            if choice in options:
+                weapon_data = weapons[options.index(choice)]
+                return weapon_data["name"], weapon_data["damage_bonus"]
+            print("Invalid choice. Please try again.")
 
-    # Handle the combat between player and enemy
-    def combat(self, player, enemy):
-        while player.get_health() > 0 and enemy.get_health() > 0:
+    def combat(self, player: Character, enemy: Character) -> bool:
+        """Handle combat between characters."""
+        while player.health > 0 and enemy.health > 0:
             self.display_combat_status(player, enemy)
-            # Pass the logger to the attack methods
             damage_dealt = player.attack(enemy, self.logger)
-            print(f"You dealt {damage_dealt} damage to {enemy.name}.")
-            if enemy.get_health() <= 0:
+            print(f"You dealt {damage_dealt} damage to {enemy.name}")
+            if enemy.health <= 0:
                 self.print_victory_message(enemy)
                 return True
 
-            # Pass the logger to the attack methods
             damage_received = enemy.attack(player, self.logger)
-            print(f"{enemy.name} dealt {damage_received} damage to you.")
-            if player.get_health() <= 0:
+            print(f"{enemy.name} dealt {damage_received} damage to you")
+            if player.health <= 0:
                 self.print_defeat_message(enemy)
                 return False
             press_enter()
 
-    # Display the current status of the combat
-    def display_combat_status(self, player, enemy):
+    def display_combat_status(self, player: Character, enemy: Character) -> None:
+        """Show current combat status."""
         clear_screen()
-        level = "LEVEL 1" if enemy.name == "Goblin King" else "LEVEL 2"
-        print(f"\n=============> {level}: {enemy.name} <=============")
-        player.display()
-        print("-" * 30)
+        print(f"\n=== Combat: {enemy.name} ===")
+        print("\nPlayer:")
+        self.player.display()
+        print("\nEnemy:")
         enemy.display()
-        print("-" * 30)
-        # press_enter() # Removed from here to avoid double enter after enemy attack
+        print("\n=== Actions ===")
 
-    # Handle battles with bosses
-    def handle_boss_battles(self):
+    def handle_boss_battles(self) -> None:
+        """Manage boss battles sequence."""
         for boss in self.bosses:
             self.introduce_boss(boss)
             if not self.combat(self.player, boss):
@@ -177,39 +446,36 @@ class Game:
                 return
         self.end_game(True)
 
-    # Introduce each boss before the battle
-    def introduce_boss(self, boss):
+    def introduce_boss(self, boss: Boss) -> None:
+        """Introduce a boss before combat."""
         clear_screen()
-        intro_messages = {
-            "Goblin King": f"Level 1 - You have entered the lair of the Goblin King. He is known for his strength and brutality. Prepare for battle, {self.player.name}!",
-            "Dark Sorcerer": f"Level 2 - You have defeated the Goblin King! Now, you face the Dark Sorcerer, a master of dark magic. Good luck, {self.player.name}!"
-        }
-        print(intro_messages.get(boss.name, "A new boss appears!"))
+        print(f"\n=== New Enemy: {boss.name} ===")
+        boss.display()
         press_enter()
 
-    # Print victory message after defeating an enemy
-    def print_victory_message(self, enemy):
+    def print_victory_message(self, enemy: Character) -> None:
+        """Display victory message."""
         print_border()
-        print(f"Victory! You defeated {enemy.name}.")
+        print(f"Victory! You defeated {enemy.name}!")
         press_enter()
 
-    # Print defeat message after being defeated by an enemy
-    def print_defeat_message(self, enemy):
+    def print_defeat_message(self, enemy: Character) -> None:
+        """Display defeat message."""
         print_border()
-        print(f"Defeat! You were defeated by {enemy.name}.")
+        print(f"Defeat! You were defeated by {enemy.name}!")
         press_enter()
 
-    # End the game and show final message
-    def end_game(self, player_won):
-        print_border()
-        if player_won:
-            print(f"Congratulations, {self.player.name}! You defeated all the bosses and restored peace to the land!")
+    def end_game(self, won: bool) -> None:
+        """End the game with appropriate message."""
+        clear_screen()
+        if won:
+            print("Congratulations! You have defeated all the bosses!")
         else:
-            print(f"Game Over. The darkness prevails, but heroes never give up. Try again, {self.player.name}!")
-        print_border()
+            print("Game Over. Better luck next time!")
+        press_enter()
 
-    # Run the game
-    def run(self):
+    def run(self) -> None:
+        """Start and run the game."""
         self.show_intro()
         self.handle_boss_battles()
 

@@ -1,14 +1,106 @@
 # RPG Lesson: Object-Oriented Programming 
 
+A Python-based RPG game that demonstrates core Object-Oriented Programming (OOP) concepts through a fun and interactive game.
 
 ## Project Structure
 
-This is a single-file implementation demonstrating OOP concepts in Python:
+This project demonstrates OOP concepts through a simple RPG game:
 
 - `rpg_oop_concepts.py` - Main game implementation
 - `README.md` - Project documentation
 - `ROADMAP.md` - Development plans
 - `UML_class_diagram.md` - Class structure and relationships
+
+## Getting Started
+
+1. Ensure you have Python installed on your system
+2. Run the game by executing:
+   ```bash
+   python rpg_oop_concepts.py
+   ```
+
+## Game Features
+
+- Character creation with customizable name and weapon choice
+- Combat system with damage calculation
+- Boss battles with special attacks
+- Health and damage management
+- Logging system for combat events
+
+## OOP Concepts Demonstrated
+
+1. **Classes and Objects**
+   - `GameLogger`: Handles game logging
+   - `Weapon`: Represents different weapons
+   - `Character`: Base class for game characters
+   - `Boss`: Inherits from Character with special abilities
+   - `Game`: Manages game flow
+
+2. **Inheritance**
+   - `Boss` inherits from `Character` with extended functionality
+
+3. **Polymorphism**
+   - Different attack behaviors between `Character` and `Boss`
+
+4. **Encapsulation**
+   - Private health attribute with controlled access
+   - Weapon composition within Character
+
+5. **Composition**
+   - Character contains a Weapon object
+
+6. **Dependency**
+   - Game depends on GameLogger for logging functionality
+
+## Usage Examples
+
+### Creating a Character
+```python
+# Create a new weapon
+weapon = Weapon("Sword", 5)
+
+# Create a character with the weapon
+character = Character("Hero", 100, 10, weapon)
+
+# Display character information
+character.display()
+```
+
+### Combat Example
+```python
+# Create two characters
+player = Character("Player", 100, 10, Weapon("Sword", 5))
+boss = Boss("Goblin King", 50, 8)
+
+# Create a logger
+logger = GameLogger()
+
+# Player attacks boss
+player.attack(boss, logger)
+
+# Boss counterattacks
+boss.attack(player, logger)
+```
+
+## Error Handling
+
+The game includes error handling for:
+- Invalid weapon choices
+- Negative health values
+- Combat logic edge cases
+- Input validation
+
+## Contributing
+
+Feel free to extend the game by:
+1. Adding new weapons
+2. Creating different types of enemies
+3. Implementing new game mechanics
+4. Enhancing the combat system
+
+## License
+
+This project is for educational purposes only.
 
 ## COIPEA: Core OOP Concepts Demonstrated
 

@@ -1,31 +1,28 @@
 # RPG Lesson: Development Roadmap
 
-This document outlines the development plan for the RPG OOP demonstration project, focusing on a single-file implementation that clearly demonstrates object-oriented programming concepts.
+## Educational Purpose
 
-# RPG Lesson: Simple File Structure
+This document outlines the development plan for the RPG OOP demonstration project. The primary purpose is to create a clear, educational codebase that demonstrates object-oriented programming concepts for students learning Python.
 
-This document outlines a clean, simple file structure for organizing the RPG game code without using Python packages. This approach keeps the project straightforward while maintaining good code organization.
+## Educational Goals
 
-## Goals
-
-1. Demonstrate core OOP concepts in a single, easy-to-understand file
-2. Show class relationships (inheritance, composition, association)
-3. Illustrate proper code organization within a single file
-4. Provide clear examples of OOP principles in practice
-=======
-1. Keep the code organized in a simple, flat structure
-2. Maintain clear separation of concerns
-3. Make it easy to understand and modify
-4. Focus on demonstrating OOP concepts
+1. **Clarity Over Complexity**: Prioritize code that is easy to understand over technically sophisticated solutions
+2. **Demonstrate OOP Concepts**: Clearly show inheritance, polymorphism, encapsulation, and abstraction
+3. **Simple Structure**: Maintain a straightforward project organization without unnecessary complexity
+4. **Practical Examples**: Provide real-world examples of OOP principles that students can relate to
+5. **Minimal Dependencies**: Avoid external libraries and complex setup requirements
+6. **Self-Contained**: Ensure the project can run with minimal setup for classroom use
+7. **Well-Documented**: Include clear comments and documentation for educational purposes
 
 ## Implementation Approach
 
-The project maintains a single Python file (`rpg_oop_concepts.py`) that contains all necessary components, organized into logical sections:
+The project uses a modular structure with separate files for different components:
 
-1. **Utility Functions** - Helper functions at the top
-2. **Core Classes** - Game entities (Character, Boss, Weapon)
-3. **Game Logic** - Main game loop and state management
-4. **Main Execution** - Entry point at the bottom
+1. **Main Game Logic** - `game.py` contains the Game class and main game flow
+2. **Core Classes** - Separate files for game entities (Character, Boss, Weapon)
+3. **Utility Modules** - Helper functions in the utils directory
+4. **Constants** - Game configuration in constants.py
+5. **Main Entry Point** - main.py as the entry point to run the game
 
 This approach keeps the demonstration focused and easy to follow while still demonstrating professional coding practices.
 
@@ -167,24 +164,21 @@ rpg_game/
 
 ### Constants Management
 
-Including a `constants.py` file helps centralize configuration values:
+We've implemented a `constants.py` file to centralize all configuration values. This approach offers several benefits:
+
+1. **Improved Maintainability**: All game values can be adjusted in one place, making balancing easier
+2. **Better Code Quality**: Eliminates "magic numbers" and hardcoded strings
+3. **Reduced Duplication**: Values used in multiple places are defined once
+4. **Enhanced Readability**: Code focuses on logic rather than specific values
+
+Our implementation includes:
 
 ```python
-# Weapon constants
-WEAPON_ROCK_NAME = "Rock"
-WEAPON_ROCK_DAMAGE_BONUS = 2
-
-WEAPON_PAPER_NAME = "Paper"
-WEAPON_PAPER_DAMAGE_BONUS = 3
-
-WEAPON_SCISSORS_NAME = "Scissors"
-WEAPON_SCISSORS_DAMAGE_BONUS = 4
+# Player constants
+PLAYER_INITIAL_HEALTH = 110
+PLAYER_INITIAL_DAMAGE = 10
 
 # Boss constants
-BOSS_WEAPON_NAME = "Boss Weapon"
-BOSS_WEAPON_DAMAGE_BONUS = 5
-
-# Character stats
 GOBLIN_KING_NAME = "Goblin King"
 GOBLIN_KING_HEALTH = 50
 GOBLIN_KING_DAMAGE = 8
@@ -193,8 +187,26 @@ DARK_SORCERER_NAME = "Dark Sorcerer"
 DARK_SORCERER_HEALTH = 60
 DARK_SORCERER_DAMAGE = 9
 
-# Player constants
-PLAYER_INITIAL_HEALTH = 110
+# Weapon constants
+WEAPON_ROCK_NAME = "Rock"
+WEAPON_ROCK_DAMAGE = 2
+
+WEAPON_PAPER_NAME = "Paper"
+WEAPON_PAPER_DAMAGE = 3
+
+WEAPON_SCISSORS_NAME = "Scissors"
+WEAPON_SCISSORS_DAMAGE = 4
+
+# UI constants
+SEPARATOR_LENGTH = 30
+BORDER_LENGTH = 80
+
+# Game messages
+WELCOME_MESSAGE = "Welcome to the RPG Adventure!"
+# ... additional message constants
+```
+
+These constants are imported and used throughout the codebase, particularly in the `Game` class, to ensure consistency and make the code more maintainable.
 
 ## Future Enhancements
 
